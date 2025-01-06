@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+}
+
+body {
+    font-family: "Lexend", sans-serif;
+}
+
+.header {
+    width: 100%;
+    height: 50px;
+    background-color: black;
+    opacity: 85%;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    color: white;
+    padding: 0 50px;
+    height: 100%;
+}
+
+.logo-container {
+    flex: 6;
+    font-size: 30px;
+}
+
+.logo-container:hover {
+    flex: 6;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.button-container {
+    flex: 1;
+}
+
+.button-list {
+    display: flex;
+    list-style: none;
+}
+
+.button-list-item {
+    margin-left: 30px;
+    margin-right: 50px;
+    opacity: 100%;
+}
+
+.button-list-item:hover {
+    font-weight: bold;
+    cursor: pointer;
+}

@@ -1,0 +1,130 @@
+body {
+  background-color: black;
+}
+
+.movie-list-container {
+  padding: 20px;
+}
+
+.movie-list-title {
+  position: relative;
+  color: white;
+  left: 20px;
+  margin-bottom: 30px;
+}
+
+.movie-list-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.movie-list-item-image {
+  width: 400px;
+  height: 250px;
+  object-fit: cover;
+  transition: all 0.3s ease-in-out;
+  border-radius: 3px;
+}
+
+.movie-list {
+  display: flex;
+  align-items: center;
+  height: 300px;
+  transition: all 0.3s ease-in-out;
+}
+
+.movie-list-item {
+  margin: 19px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.movie-list-item:hover .movie-list-item-image {
+  transform: scale(1.15);
+  margin: 0 25px;
+  opacity: 0.5;
+}
+
+.movie-list-item:hover .movie-list-item-title {
+  opacity: 1;
+}
+
+.movie-list-item:hover .movie-list-item-desc {
+  opacity: 1;
+}
+
+.movie-list-item:hover .movie-list-item-button {
+  opacity: 1;
+}
+
+.movie-list-item-title {
+  padding: 0 10px;
+  font-size: 32px;
+  position: absolute;
+  top: 10%;
+  left: 20px;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  color: white;
+}
+
+.movie-list-item-desc {
+  padding: 10px;
+  color: white;
+  font-size: 10px;
+  font-family: "Lexend", sans-serif;
+  position: absolute;
+  top: 27%;
+  left: 20px;
+  width: 370px;
+  height: 77px;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+
+.movie-list-item-button {
+  padding: 10px;
+  background-color: #444;
+  color: white;
+  font-family: "Lexend", sans-serif;
+  border-radius: 10px;
+  width: 70px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  bottom: 40px;
+  left: 30px;
+  box-sizing: border-box;
+
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.movie-list-item-button.buy {
+  left: 120px;
+}
+
+.movie-list-item-button:hover {
+  background-color: #333;
+}
+
+.arrow {
+  font-size: 100px;
+  position: absolute;
+  top: 100px;
+  right: 0px;
+  color: lightgray;
+  opacity: 0.3;
+  transition: all 0.3s ease-in-out;
+}
+
+.arrow:hover {
+  opacity: 1;
+}

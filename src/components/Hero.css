@@ -1,0 +1,44 @@
+.featured-content {
+  height: 85vh;
+  padding: 100px;
+  display: flex;
+}
+
+.featured-title {
+  width: 1000px;
+  font-size: 6rem;
+  color: white;
+  font-family: "Lexend", sans-serif;
+}
+
+.featured-description {
+  width: 700px;
+  color: white;
+  margin: 30px 0;
+  font-size: larger;
+  font-weight: 400;
+  font-family: "Lexend", sans-serif;
+}
+
+.featured-button {
+  background-color: #444;
+  color: white;
+  width: 100px;
+  height: 40px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-family: "Lexend", sans-serif;
+}
+
+.featured-button:hover {
+  background-color: #333;
+}
+
+.featured-button.buy {
+  margin: 0px 20px;
+}
