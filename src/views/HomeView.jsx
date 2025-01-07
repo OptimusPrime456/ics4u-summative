@@ -1,9 +1,25 @@
-import "./HomeView.css";
+import './HomeView.css'
+import Header from "../components/Header";
+import Hero from "../components/Hero";
+import Feature from '../components/Feature';
+import Footer from '../components/Footer';
 
-const HomeView = () => {
+function HomeView() {
   return (
-    <h1>Home</h1>
+    <div>
+      <Header />
+      <Hero />
+      <Feature />
+      <Feature />
+      <Hero />
+      <Feature />
+      <Feature />
+      <Hero />
+      <Feature />
+      <Feature />
+      <Footer />
+    </div>
   )
 }
 
-export default HomeView;
+export default HomeView

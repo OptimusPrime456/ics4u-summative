@@ -1,0 +1,173 @@
+* {
+  font-family: "Lexend", sans-serif;
+}
+
+.background {
+  opacity: 85%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: -999;
+  filter: brightness(40%)
+}
+
+.title {
+  margin: auto;
+  color: #FCF7F8;
+  padding: 2vh;
+  box-sizing: border-box;
+  width: 50%;
+  top: 10vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Ubuntu", serif;
+  font-weight: 200;
+  font-size: 15vh;
+}
+
+.island {
+  position: relative;
+  left: 50%;
+  width: 350px;
+  padding: 30px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.75);
+  transform: translate(-50%, +17vh);
+}
+
+.island h2 {
+  color: #fff;
+  margin: auto;
+  font-size: 2rem;
+}
+
+.island form {
+  margin: 25px 0 40px;
+}
+
+.field {
+  position: relative;
+  height: 55px;
+  margin-bottom: 16px;
+}
+
+.field input {
+  height: 100%;
+  width: 100%;
+  background: #333;
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.field input:is(:focus, :valid) {
+  padding-top: 10px;
+  text-align: -50px;
+  text-indent: 18px;
+  background: #444;
+  box-sizing: border-box;
+
+}
+
+.field label {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  color: #8c8c8c;
+  pointer-events: none;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  transition: all 0.1s ease;
+}
+
+.field input:is(:focus, :valid)~label {
+  transform: translateY(-130%);
+  font-size: 0.75rem;
+}
+
+form button {
+  width: 100%;
+  padding: 16px 0;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 4px;
+  margin: 10px 0;
+  background: #444;
+  cursor: pointer;
+  transition: 0.1s ease;
+}
+
+form button:hover {
+  background: #333;
+}
+
+form .help {
+  display: flex;
+  justify-content: space-between;
+}
+
+form .remember {
+  display: flex;
+}
+
+form .remember input {
+  margin-right: 5px;
+  accent-color: #b3b3b3;
+}
+
+form .help :where(label, a) {
+  font-size: 0.9rem;
+}
+
+.island :where(label, p, a) {
+  color: #b3b3b3;
+}
+
+.island p a {
+  color: #fff;
+}
+
+.island a {
+  text-decoration: none;
+}
+
+.island a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 740px) {
+  body::before {
+      display: none;
+  }
+
+  nav,
+  .island {
+      width: 100%;
+      height: 100%;
+  }
+
+  nav a img {
+      width: 140px;
+  }
+
+  .island {
+      top: 43%;
+      width: 350px;
+  }
+
+  .island form {
+      margin: 25px 0 40px;
+  }
+}
