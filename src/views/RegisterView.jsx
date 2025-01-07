@@ -4,6 +4,7 @@ import Header from '../components/Header'
 import { useStoreContext } from '../context/index.jsx'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { auth } from '../firebase/index.js'
 
 function RegisterView() {
     const { setFirstName, setLastName, setEmail, setPassword, setSignedIn, setGenres } = useStoreContext();
