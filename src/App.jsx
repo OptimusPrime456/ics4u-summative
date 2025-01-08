@@ -10,6 +10,7 @@ import DetailView from './views/DetailView'
 import CartView from './views/CartView'
 import SettingsView from './views/SettingsView'
 import ProtectedRoutes from './util/ProtectedRoutes'
+import ErrorView from './views/ErrorView'
 
 function App() {
   return (
