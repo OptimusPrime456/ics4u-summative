@@ -4,6 +4,7 @@ import Header from '../components/Header'
 import { useStoreContext } from '../context/index.jsx'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { auth } from '../firebase/index.js'
 
 function RegisterView() {
@@ -32,6 +33,17 @@ function RegisterView() {
         { id: 10752, name: "War" },
         { id: 37, name: "Western" },
     ];
+    const { setUser } = useStoreContext();
+
+    const registerByGoogle = async () => {
+        try {
+            const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;   
+            setUser(user);
+            navigate("/movies");
+        } catch {
+            alert("An error has occurred please try again.")
+        }
+    }
 
     function register(event) {
         event.preventDefault();
@@ -49,6 +61,10 @@ function RegisterView() {
             setGenres(selectedGenres);
             navigate('/home');
         }
+    }
+
+    function registerByEmail() {
+
     }
 
     function selectGenre(id, name) {
@@ -104,6 +120,7 @@ function RegisterView() {
                     </div>
 
                     <button type="submit">Create Account</button>
+                    <button onClick={() => registerByGoogle()}>Register by Google</button>
                 </form>
                 <p>Already have an account? <a href="/login">Sign In</a></p>
             </div>
