@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import { useStoreContext } from '../context/index.jsx'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase/index.js'
 
 function RegisterView() {
@@ -16,6 +16,7 @@ function RegisterView() {
     const password = useRef("");
     const confirmPassword = useRef("");
     const [selectedGenres, setSelectedGenres] = useState([]);
+    const { setUser } = useStoreContext();
     const genreList = [
         { id: 28, name: "Action" },
         { id: 12, name: "Adventure" },
@@ -33,15 +34,30 @@ function RegisterView() {
         { id: 10752, name: "War" },
         { id: 37, name: "Western" },
     ];
-    const { setUser } = useStoreContext();
+
 
     const registerByGoogle = async () => {
         try {
-            const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;   
+            const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
             setUser(user);
+            setSignedIn(true);
             navigate("/movies");
-        } catch {
-            alert("An error has occurred please try again.")
+        } catch (error) {
+            alert("An error has occurred, please try again.")
+        }
+    }
+
+    const registerByEmail = async (event) => {
+        event.preventDefault();
+
+        try {
+            const user = (await createUserWithEmailAndPassword(auth, email, password)).user;
+            setUser(user);
+            console.log(user);
+            setSignedIn(true);
+            navigate("/movies")
+        } catch (error) {
+            alert("An error has occured, please try again.")
         }
     }
 
@@ -61,10 +77,6 @@ function RegisterView() {
             setGenres(selectedGenres);
             navigate('/home');
         }
-    }
-
-    function registerByEmail() {
-
     }
 
     function selectGenre(id, name) {
@@ -120,6 +132,7 @@ function RegisterView() {
                     </div>
 
                     <button type="submit">Create Account</button>
+                    <button onClick={() => registerByEmail()}>Register by Email and Password</button>
                     <button onClick={() => registerByGoogle()}>Register by Google</button>
                 </form>
                 <p>Already have an account? <a href="/login">Sign In</a></p>

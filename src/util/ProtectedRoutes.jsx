@@ -3,9 +3,10 @@ import { Outlet, Navigate } from "react-router-dom";
 
 function ProtectedRoutes() {
     const { user } = useStoreContext();
+    const { signedIn } = useStoreContext();
 
     return (
-        user ? <Outlet /> : <Navigate to="/login"/>
+        signedIn ? <Outlet /> : <Navigate to="/login"/>
     );
 }
 
