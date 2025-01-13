@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import { useStoreContext } from '../context/index.jsx'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from '../firebase/index.js'
 
 function RegisterView() {
@@ -52,12 +52,14 @@ function RegisterView() {
 
         try {
             const user = (await createUserWithEmailAndPassword(auth, email, password)).user;
+            await updateProfile(user, { displayName: `${firstName} ${lastName}` });
             setUser(user);
             console.log(user);
             setSignedIn(true);
-            navigate("/movies")
+            navigate("/movies");
         } catch (error) {
-            alert("An error has occured, please try again.")
+            console.log(error);
+            alert("An error has occured, please try again.");
         }
     }
 
@@ -131,9 +133,10 @@ function RegisterView() {
                         </div>
                     </div>
 
-                    <button type="submit">Create Account</button>
-                    <button onClick={() => registerByEmail()}>Register by Email and Password</button>
-                    <button onClick={() => registerByGoogle()}>Register by Google</button>
+                    <button type="submit">Create Account</button>\
+                    <button type="submit" onClick={() => registerByGoogle()}>Register by Google</button>
+                    <button type="submit" onClick={(event) => registerByEmail(event)}>Register by Email and Password</button>
+
                 </form>
                 <p>Already have an account? <a href="/login">Sign In</a></p>
             </div>
