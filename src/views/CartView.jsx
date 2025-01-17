@@ -3,7 +3,7 @@ import "./CartView.css"
 import Header from "../components/Header"
 
 function CartView() {
-  const { cart, setCart } = useStoreContext();
+  const { user, cart, setCart } = useStoreContext();
 
   const cartItems = [];
 

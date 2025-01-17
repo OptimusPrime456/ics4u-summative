@@ -8,7 +8,6 @@ import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, up
 import { auth } from '../firebase/index.js'
 
 function RegisterView() {
-    const { setFirstName, setLastName, setEmail, setPassword, setSignedIn, setGenres } = useStoreContext();
     const navigate = useNavigate();
     const firstName = useRef("");
     const lastName = useRef("");
@@ -16,7 +15,7 @@ function RegisterView() {
     const password = useRef("");
     const confirmPassword = useRef("");
     const [selectedGenres, setSelectedGenres] = useState([]);
-    const { setUser } = useStoreContext();
+    const { setGenres, setUser } = useStoreContext();
     const genreList = [
         { id: 28, name: "Action" },
         { id: 12, name: "Adventure" },
@@ -65,29 +64,10 @@ function RegisterView() {
             await updateProfile(user, { displayName: `${firstName} ${lastName}` });
             setUser(user);
             setGenres(selectedGenres);
-            console.log(user);
             setSignedIn(true);
             navigate("/movies");
         } catch (error) {
             alert(error);
-        }
-    }
-
-    function register(event) {
-        event.preventDefault();
-
-        if (password.current.value !== confirmPassword.current.value) {
-            alert("The passwords don't match.");
-        } else if (selectedGenres.length < 10) {
-            alert("Select at least 10 genres!");
-        } else {
-            setFirstName(firstName.current.value);
-            setLastName(lastName.current.value);
-            setEmail(email.current.value);
-            setPassword(password.current.value);
-            setSignedIn(true);
-            setGenres(selectedGenres);
-            navigate('/home');
         }
     }
 

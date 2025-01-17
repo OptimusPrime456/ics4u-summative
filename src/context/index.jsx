@@ -1,20 +1,17 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import { Map } from 'immutable';
 
 const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
-	const [email, setEmail] = useState("");
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [password, setPassword] = useState("");
 	const [cart, setCart] = useState(Map());
 	const [genres, setGenres] = useState([]);
-	const [signedIn, setSignedIn] = useState(false);
 	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [previousPurchases, setPreviousPurchases] = useState(null);
 
 	return (
-		<StoreContext.Provider value={{ email, setEmail, cart, setCart, firstName, setFirstName, lastName, setLastName, password, setPassword, genres, setGenres, signedIn, setSignedIn, user, setUser }}>
+		<StoreContext.Provider value={{ cart, setCart, genres, setGenres, user, setUser, loading, setLoading, previousPurchases, setPreviousPurchases }}>
 			{children}
 		</StoreContext.Provider>
 	);

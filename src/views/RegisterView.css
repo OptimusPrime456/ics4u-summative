@@ -1,4 +1,4 @@
-*{
+* {
   font-family: "Lexend", sans-serif;
 }
 
@@ -47,7 +47,7 @@
 
 .island h2 {
   color: #fff;
-  margin:auto;
+  margin: auto;
   font-size: 2rem;
 }
 
@@ -76,7 +76,7 @@
 .field input:is(:focus, :valid) {
   padding-top: 10px;
   text-align: -50px;
-  text-indent:18px;
+  text-indent: 18px;
   background: #444;
   box-sizing: border-box;
 
@@ -151,26 +151,26 @@ form button:hover {
 
 @media (max-width: 740px) {
   body::before {
-      display: none;
+    display: none;
   }
 
   nav,
   .island {
-      width:100%;
-      height:100%;
+    width: 100%;
+    height: 100%;
   }
 
   nav a img {
-      width: 140px;
+    width: 140px;
   }
 
   .island {
-      top: 43%;
-      width: 350px;
+    top: 43%;
+    width: 350px;
   }
 
   .island form {
-      margin: 25px 0 40px;
+    margin: 25px 0 40px;
   }
 }
 

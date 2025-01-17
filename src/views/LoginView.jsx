@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import "./LoginView.css"
 import Background from '../assets/background.png'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStoreContext } from "../context";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
@@ -11,7 +11,7 @@ function LoginView() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
-	const { setFirstName, setSignedIn, user, setUser } = useStoreContext();
+	const { user, setUser } = useStoreContext();
 
 	async function loginByEmail(event) {
 		event.preventDefault();
@@ -20,7 +20,6 @@ function LoginView() {
 			const user = (await signInWithEmailAndPassword(auth, email, password)).user;
 			navigate("/movies");
 			setUser(user);
-			setSignedIn(true);
 		} catch (error) {
 			console.log(error);
 			alert("An error occurred while signing in!");
