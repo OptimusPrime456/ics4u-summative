@@ -49,7 +49,7 @@ function GenreView() {
                 <h1 className="genre-title"> {genreMap.get(Number(params.genre_id))} </h1>
                 <div className="movies">
                     {movies.slice(0, 21).map((movie, index) => (
-                        <div className="movie" key={index} onClick={() => loadMovie(movie.id)}>
+                        <div className="movie" key={index} onClick={() => loadMovie(movies.id)}>
                             <img
                                 className="movie-poster"
                                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}

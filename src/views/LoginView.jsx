@@ -1,23 +1,40 @@
 import Header from "../components/Header";
 import "./LoginView.css"
 import Background from '../assets/background.png'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStoreContext } from "../context";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase";
 
 function LoginView() {
+	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
-	const { setFirstName, setSignedIn } = useStoreContext();
+	const { setFirstName, setSignedIn, user, setUser } = useStoreContext();
 
-	function login(event) {
+	async function loginByEmail(event) {
 		event.preventDefault();
-		if (password === "abcd1234") {
+
+		try {
+			const user = (await signInWithEmailAndPassword(auth, email, password)).user;
+			navigate("/movies");
+			setUser(user);
 			setSignedIn(true);
-			setFirstName('User');
-			navigate('/home');
-		} else {
-			alert("Wrong password!");
+		} catch (error) {
+			console.log(error);
+			alert("An error occurred while signing in!");
+		}
+	}
+
+	async function loginByGoogle() {
+		try {
+			const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+			setUser(user);
+			setSignedIn(true);
+			navigate("/movies");
+		} catch (error) {
+			alert("An error occurred while signing in!");
 		}
 	}
 
@@ -27,9 +44,9 @@ function LoginView() {
 			<Header />
 			<div className="island">
 				<h2>Login</h2>
-				<form onSubmit={(event) => { login(event) }}>
+				<form onSubmit={(event) => { loginByEmail(event) }}>
 					<div className="field">
-						<input type="text" required />
+						<input type="text" value={email}  onChange={(event) => { setEmail(event.target.value) }} required />
 						<label>Email</label>
 					</div>
 					<div className="field">
@@ -39,6 +56,7 @@ function LoginView() {
 					<button type="submit">Login</button>
 				</form>
 				<p>New to Netlicks? <a href="/register">Create account</a></p>
+				<button onClick={() => loginByGoogle()}>Login by Google</button>
 			</div>
 		</div>
 

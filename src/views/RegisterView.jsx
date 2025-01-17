@@ -50,16 +50,26 @@ function RegisterView() {
     const registerByEmail = async (event) => {
         event.preventDefault();
 
+        if (password.current.value !== confirmPassword.current.value) {
+            alert("The passwords don't match!");
+            return;
+        }
+        
+        if (selectedGenres.length < 10) {
+            alert("Select at least 10 genres!");
+            return;
+        }
+
         try {
-            const user = (await createUserWithEmailAndPassword(auth, email, password)).user;
+            const user = (await createUserWithEmailAndPassword(auth, email.current.value, password.current.value)).user;
             await updateProfile(user, { displayName: `${firstName} ${lastName}` });
             setUser(user);
+            setGenres(selectedGenres);
             console.log(user);
             setSignedIn(true);
             navigate("/movies");
         } catch (error) {
-            console.log(error);
-            alert("An error has occured, please try again.");
+            alert(error);
         }
     }
 
@@ -95,7 +105,7 @@ function RegisterView() {
             <Header />
             <div className="island">
                 <h2>Register</h2>
-                <form action="#" onSubmit={(event) => register(event)}>
+                <form action="#" onSubmit={(event) => registerByEmail(event)}>
                     <div className="field">
                         <input type="text" ref={firstName} required />
                         <label>First Name</label>
@@ -132,17 +142,14 @@ function RegisterView() {
                             ))}
                         </div>
                     </div>
-
-                    <button type="submit">Create Account</button>\
-                    <button type="submit" onClick={() => registerByGoogle()}>Register by Google</button>
-                    <button type="submit" onClick={(event) => registerByEmail(event)}>Register by Email and Password</button>
+                    <button type="submit">Register</button>
 
                 </form>
                 <p>Already have an account? <a href="/login">Sign In</a></p>
+                <button type="submit" onClick={() => registerByGoogle()}>Register by Google</button>
             </div>
         </div>
     )
 }
 
 export default RegisterView;
-
