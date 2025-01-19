@@ -7,7 +7,6 @@ import { signOut } from 'firebase/auth';
 function Header() {
 	const navigate = useNavigate();
 	const { user, setUser } = useStoreContext();
-
 	const logout = async () => {
 		try {
 			await signOut(auth);

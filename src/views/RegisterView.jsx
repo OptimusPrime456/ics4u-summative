@@ -36,10 +36,20 @@ function RegisterView() {
 
 
     const registerByGoogle = async () => {
+        if (password.current.value !== confirmPassword.current.value) {
+            alert("The passwords don't match!");
+            return;
+        }
+
+        if (selectedGenres.length < 10) {
+            alert("Select at least 10 genres!");
+            return;
+        }
+
         try {
             const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
             setUser(user);
-            setSignedIn(true);
+            setGenres(selectedGenres);
             navigate("/movies");
         } catch (error) {
             alert("An error has occurred, please try again.")
@@ -53,7 +63,7 @@ function RegisterView() {
             alert("The passwords don't match!");
             return;
         }
-        
+
         if (selectedGenres.length < 10) {
             alert("Select at least 10 genres!");
             return;
@@ -61,10 +71,9 @@ function RegisterView() {
 
         try {
             const user = (await createUserWithEmailAndPassword(auth, email.current.value, password.current.value)).user;
-            await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+            await updateProfile(user, { displayName: `${firstName.current.value} ${lastName.current.value}` });
             setUser(user);
             setGenres(selectedGenres);
-            setSignedIn(true);
             navigate("/movies");
         } catch (error) {
             alert(error);

@@ -8,19 +8,27 @@ function DetailView() {
     const [movie, setMovie] = useState([]);
     const [genres, setGenres] = useState([]);
     const [trailers, setTrailers] = useState([]);
-    const movieInfo = useParams();
-    const { cart, setCart } = useStoreContext();
+    const movieData = useParams();
+    const { user, cart, setCart } = useStoreContext();
 
     useEffect(() => {
         (async function getMovie() {
             const response = await axios.get(
-                `https://api.themoviedb.org/3/movie/${movieInfo.id}?api_key=${import.meta.env.VITE_TMDB_KEY}&append_to_response=videos`
+                `https://api.themoviedb.org/3/movie/${movieData.id}?api_key=${import.meta.env.VITE_TMDB_KEY}&append_to_response=videos`
             );
             setMovie(response.data);
             setGenres(response.data.genres);
             setTrailers(response.data.videos.results.filter((video) => video.type === "Trailer"));
         })();
     }, []);
+
+    const addToCart = () => {
+        setCart((prevCart) => {
+            const cart = prevCart.set(movieData.id, { title: movie.original_title, url: movie.poster_path });
+            localStorage.setItem(user.uid, JSON.stringify(cart.toJS()));
+            return cart;
+        });
+    }
 
     return (
         <div className="movie-details">
@@ -40,7 +48,7 @@ function DetailView() {
             {movie.poster_path && (
                 <img className="movie-poster" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}/>
             )}
-            <button className="buy-button" onClick={() => {setCart((prevCart) => prevCart.set(movie.id, {title: movie.original_title, poster: movie.poster_path}))}}>{`${cart.has(movie.id) ? 'Added' : 'Buy'}`}</button>
+                <button className="buy-button" onClick={() => addToCart()}>{`${cart.has(movieData.id) ? 'Added' : 'Buy'}`}</button>
             <div className="trailers-section">
                 <h2>Trailers</h2>
                 <div className="trailers-grid">
