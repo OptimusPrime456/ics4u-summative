@@ -11,6 +11,7 @@ function Header() {
 	const logout = async () => {
 		try {
 			await signOut(auth);
+			location.reload();
 			setUser(null);
 		} catch {
 			alert("Error logging out!");

@@ -16,7 +16,7 @@ function RegisterView() {
     const password = useRef("");
     const confirmPassword = useRef("");
     const [selectedGenres, setSelectedGenres] = useState([]);
-    const { setGenres, setUser } = useStoreContext();
+    const { setGenres, setUser, cart } = useStoreContext();
     const genreList = [
         { id: 28, name: "Action" },
         { id: 12, name: "Adventure" },
@@ -46,7 +46,7 @@ function RegisterView() {
             const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
 
             await setDoc(doc(firestore, "users", user.uid), {
-                signInMethod: "google", selectedGenres, previousPurchases: []
+                selectedGenres, previousPurchases: []
             });
 
             setUser(user);
@@ -78,6 +78,7 @@ function RegisterView() {
             });
 
             setUser(user);
+            localStorage.setItem(user.uid, cart.toJS());
             setGenres(selectedGenres);
             navigate("/movies");
         } catch (error) {
