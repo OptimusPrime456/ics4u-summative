@@ -29,8 +29,17 @@ export const StoreProvider = ({ children }) => {
 		return <h1>Loading...</h1>
 	}
 
+	const updateCart = (newCart) => {
+		const updatedCart = typeof newCart === 'function' ? newCart(cart) : newCart;
+		const immutableCart = Map.isMap(updatedCart) ? updatedCart : Map(updatedCart);
+		setCart(immutableCart);
+		if (user) {
+			localStorage.setItem(user.uid, JSON.stringify(immutableCart.toJS()));
+		}
+	};
+
 	return (
-		<StoreContext.Provider value={{ cart, setCart, genres, setGenres, user, setUser, loading, setLoading, previousPurchases, setPreviousPurchases }}>
+		<StoreContext.Provider value={{ cart, setCart: updateCart, genres, setGenres, user, setUser, loading, setLoading, previousPurchases, setPreviousPurchases }}>
 			{children}
 		</StoreContext.Provider>
 	);

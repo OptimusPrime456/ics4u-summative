@@ -5,7 +5,8 @@ import { useStoreContext } from '../context/index.jsx'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { auth } from '../firebase/index.js'
+import { auth, firestore } from '../firebase/index.js'
+import { doc, setDoc } from '@firebase/firestore'
 
 function RegisterView() {
     const navigate = useNavigate();
@@ -74,6 +75,11 @@ function RegisterView() {
             await updateProfile(user, { displayName: `${firstName.current.value} ${lastName.current.value}` });
             setUser(user);
             setGenres(selectedGenres);
+
+            await setDoc(doc(firestore, "users", user.uid), {
+                firstName: firstName.current.value, lastName: lastName.current.value, email: email.current.value, signInMethod: "email", selectedGenres, previousPurchases: []
+            });
+
             navigate("/movies");
         } catch (error) {
             alert(error);
@@ -104,7 +110,7 @@ function RegisterView() {
                         <label>Last Name</label>
                     </div>
                     <div className="field">
-                        <input type="text" ref={email} required />
+                        <input type="email" ref={email} required />
                         <label>Email</label>
                     </div>
                     <div className="field">
