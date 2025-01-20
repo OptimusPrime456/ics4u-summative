@@ -37,18 +37,18 @@ function RegisterView() {
 
 
     const registerByGoogle = async () => {
-        if (password.current.value !== confirmPassword.current.value) {
-            alert("The passwords don't match!");
-            return;
-        }
-
-        if (selectedGenres.length < 10) {
-            alert("Select at least 10 genres!");
-            return;
-        }
-
         try {
+            if (selectedGenres.length < 10) {
+                alert("Select at least 10 genres!");
+                return;
+            }
+
             const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
+
+            await setDoc(doc(firestore, "users", user.uid), {
+                signInMethod: "google", selectedGenres, previousPurchases: []
+            });
+
             setUser(user);
             setGenres(selectedGenres);
             navigate("/movies");
@@ -59,27 +59,26 @@ function RegisterView() {
 
     const registerByEmail = async (event) => {
         event.preventDefault();
-
-        if (password.current.value !== confirmPassword.current.value) {
-            alert("The passwords don't match!");
-            return;
-        }
-
-        if (selectedGenres.length < 10) {
-            alert("Select at least 10 genres!");
-            return;
-        }
-
         try {
+            if (password.current.value !== confirmPassword.current.value) {
+                alert("The passwords don't match!");
+                return;
+            }
+
+            if (selectedGenres.length < 10) {
+                alert("Select at least 10 genres!");
+                return;
+            }
+
             const user = (await createUserWithEmailAndPassword(auth, email.current.value, password.current.value)).user;
             await updateProfile(user, { displayName: `${firstName.current.value} ${lastName.current.value}` });
-            setUser(user);
-            setGenres(selectedGenres);
 
             await setDoc(doc(firestore, "users", user.uid), {
-                firstName: firstName.current.value, lastName: lastName.current.value, email: email.current.value, signInMethod: "email", selectedGenres, previousPurchases: []
+                selectedGenres, previousPurchases: []
             });
 
+            setUser(user);
+            setGenres(selectedGenres);
             navigate("/movies");
         } catch (error) {
             alert(error);

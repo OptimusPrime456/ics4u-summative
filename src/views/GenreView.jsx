@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useStoreContext } from '../context'
-import { Map } from 'immutable';
+import { doc, getDoc } from 'firebase/firestore'
+import { firestore } from '../firebase'
 
 function GenreView() {
     const [movies, setMovies] = useState([]);
@@ -14,7 +15,20 @@ function GenreView() {
     const [page, setPage] = useState(1);
     const { cart, setCart, user } = useStoreContext();
     const navigate = useNavigate();
+    const [previousPurchases, setPreviousPurchases] = useState([]);
     
+    useEffect(() => {
+        async function fetchPreviousPurchases() {
+            const userDocRef = doc(firestore, "users", user.uid);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setPreviousPurchases(userData.previousPurchases || []);
+            }
+        }
+        fetchPreviousPurchases();
+    }, [user]);
+
     useEffect(() => {
         async function getMovies() {
             const response = await axios.get(
@@ -50,11 +64,17 @@ function GenreView() {
         setMovies(response.data.results);
     }
 
-    const addToCart = (e) => {
+    const addToCart = (e, movie) => {
         e.stopPropagation();
+        
+        if (previousPurchases.some(purchase => purchase.id === movie.id.toString())) {
+            alert("You have already purchased this movie!");
+            return;
+        }
+
+        console.log(movie);
         setCart((prevCart) => {
-            const cart = prevCart.set(movieData.id, { title: movies.original_title, url: movies.poster_path });
-            console.log(cart);
+            const cart = prevCart.set(movie.id.toString(), { title: movie.original_title, url: movie.poster_path });
             localStorage.setItem(user.uid, JSON.stringify(cart.toJS()));
             return cart;
         });
@@ -74,7 +94,7 @@ function GenreView() {
                             />
                             <span className="movie-title">{movie.original_title}</span>
                             <button onClick={(e) => addToCart(e, movie)}>
-                                {cart.has(movie.id) ? 'Added' : 'Buy'}
+                                {cart.has(movie.id.toString()) ? 'Added' : previousPurchases.some(purchase => purchase.id === movie.id.toString()) ? "Purchased" : "Buy"}
                             </button>
                         </div>
                     ))}

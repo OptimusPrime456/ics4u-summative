@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStoreContext } from '../context'
+import { firestore } from '../firebase'
+import { doc, getDoc } from 'firebase/firestore'
 
 function DetailView() {
     const [movie, setMovie] = useState([]);
@@ -10,6 +12,8 @@ function DetailView() {
     const movieData = useParams();
     const { user, cart, setCart } = useStoreContext();
     const inCart = cart.has(movieData.id);
+    const [previousPurchases, setPreviousPurchases] = useState([]);
+    const isPurchased = previousPurchases.some(purchase => purchase.id === movieData.id);
 
     useEffect(() => {
         (async function getMovie() {
@@ -21,7 +25,23 @@ function DetailView() {
         })();
     }, []);
 
+    useEffect(() => {
+        async function fetchPreviousPurchases() {
+            const userDocRef = doc(firestore, "users", user.uid);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setPreviousPurchases(userData.previousPurchases || []);
+            }
+        }
+        fetchPreviousPurchases();
+    }, [user]);
+
     const addToCart = () => {
+        if (isPurchased) {
+            alert('You have already purchased this movie!');
+            return;
+        }
         setCart((prevCart) => {
             const cart = prevCart.set(movieData.id, { title: movie.original_title, url: movie.poster_path });
             console.log(cart);
@@ -36,16 +56,17 @@ function DetailView() {
             <p className='tagline'>{movie.tagline}</p>
             <p className="movie-overview">{movie.overview}</p>
             <div className="movie-info">
-                <div className='rating'><strong>Overall Rating:</strong> {movie.vote_average} ({movie.vote_count} ratings)</div>
-                <div className='release-date'><strong>Release Date:</strong> {movie.release_date}</div>
+            <div className='release-date'><strong>Release Date:</strong> {movie.release_date}</div>
                 <div className='runtime'><strong>Runtime:</strong> {movie.runtime} mins</div>
-                <div className='revenue'><strong>Revenue:</strong> ${movie.revenue} </div>
+                <div className='rating'><strong>Overall Rating:</strong> {movie.vote_average} ({movie.vote_count} ratings)</div>
+                <div className='popularity'><strong>Popularity:</strong> {movie.popularity}</div>
                 <div className='budget'><strong>Budget:</strong> ${movie.budget}</div>
+                <div className='revenue'><strong>Revenue:</strong> ${movie.revenue} </div>
             </div>
             {movie.poster_path && (
                 <img className="movie-poster" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}/>
             )}
-                <button className="buy-button" onClick={() => addToCart()}>{inCart ? "Added" : "Buy"}</button>
+                <button className="buy-button" onClick={() => addToCart()}>{inCart ? "Added" : isPurchased ? "Purchased" : "Buy"}</button>
             <div className="trailers-section">
                 <h2>Trailers</h2>
                 <div className="trailers-grid">

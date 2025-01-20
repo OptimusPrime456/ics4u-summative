@@ -1,6 +1,6 @@
 function ErrorView() {
     return (
-        <p>page not exist</p>
+        <p className="error">This page does not exist.</p>
     )
 }
 

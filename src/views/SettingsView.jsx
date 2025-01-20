@@ -1,17 +1,24 @@
 import './SettingsView.css';
 import { useStoreContext } from '../context';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
+import { auth, firestore } from '../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
+import { updateProfile, updatePassword } from 'firebase/auth';
 
 function SettingsView() {
-  const { firstName, setFirstName, lastName, setLastName, email, genres, setGenres } = useStoreContext();
+  const { user, setUser, genres, setGenres, previousPurchases } = useStoreContext();
   const navigate = useNavigate();
-  const [newFirstName, setNewFirstName] = useState(firstName);
-  const [newLastName, setNewLastName] = useState(lastName);
-  const [selectedGenres, setSelectedGenres] = useState(genres);
 
-  const genreList = [
+  const [newFirstName, setNewFirstName] = useState(user.displayName.split(' ')[0]);
+  const [newLastName, setNewLastName] = useState(user.displayName.split(' ')[1]);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [selectedGenres, setSelectedGenres] = useState(genres || []);
+  const isGoogleUser = user.providerData.some(profile => profile.providerId === 'google.com');
+
+  const genresList = [
     { id: 28, name: "Action" },
     { id: 12, name: "Adventure" },
     { id: 16, name: "Animation" },
@@ -38,16 +45,31 @@ function SettingsView() {
     });
   }
 
-  function saveChanges(event) {
+  const saveChanges = async (event) => {
     event.preventDefault();
 
-    if (selectedGenres.length < 10) {
+    if (newPassword !== confirmPassword) {
+      alert("The passwords don't match!");
+      return;
+    } else if (selectedGenres.length < 10) {
       alert("Select at least 10 genres!");
+      return;
     } else {
-      setFirstName(newFirstName);
-      setLastName(newLastName);
+      if (!isGoogleUser) {
+        try {
+          const updatedUser = { ...user, displayName: `${newFirstName} ${newLastName}` };
+          await updateProfile(auth.currentUser, { displayName: updatedUser.displayName });
+          await updatePassword(auth.currentUser, newPassword);
+        } catch {
+          alert("An error occurred while updating your settings!");
+          return;
+        }
+      }
       setGenres(selectedGenres);
-      navigate('/settings');
+      const docRef = doc(firestore, "users", user.uid);
+      await updateDoc(docRef, { genres: selectedGenres, });
+      alert("Your settings have been saved!");
+      navigate("/movies");
     }
   }
 
@@ -60,7 +82,8 @@ function SettingsView() {
             type="text"
             value={newFirstName}
             onChange={(e) => setNewFirstName(e.target.value)}
-            required
+            required={isGoogleUser}
+            readOnly={isGoogleUser}
           />
           <label>First Name</label>
         </div>
@@ -69,18 +92,40 @@ function SettingsView() {
             type="text"
             value={newLastName}
             onChange={(e) => setNewLastName(e.target.value)}
-            required
+            required={isGoogleUser}
+            readOnly={isGoogleUser}
           />
           <label>Last Name</label>
         </div>
         <div className="settings-field">
-          <input type="text" value={email} readOnly />
+          <input
+            type="email"
+            value={user.email}
+            readOnly
+          />
           <label>Email</label>
         </div>
+        {!isGoogleUser && (<>
+          <div className="settings-field">
+            <input
+              type="password"
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <label>New Password</label>
+          </div>
+          <div className="settings-field">
+            <input
+              type="password"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <label>Confirm Password</label>
+          </div>
+        </>
+        )}
         <div className="genre-list-container">
           <h2>Select Genres</h2>
           <div className="genre-list">
-            {genreList.map((genre) => {
+            {genresList.map((genre) => {
               const isSelected = selectedGenres.some((g) => g.id === genre.id);
               return (
                 <button
@@ -98,6 +143,26 @@ function SettingsView() {
         </div>
         <button type="submit">Save Changes</button>
       </form>
+      {previousPurchases && previousPurchases.length > 0 && (
+        <div className="settings-purchases-container">
+          <h3 className="settings-purchases-title">Your Past Purchases</h3>
+          <div className="settings-purchases-list">
+            {previousPurchases.map((purchase, index) => (
+              <div className="settings-purchase-item" key={index}>
+                <img
+                  className="settings-purchase-img"
+                  src={`https://image.tmdb.org/t/p/w500${purchase.poster_path}`}
+                  alt={purchase.title}
+                  onClick={() => navigate(`/movies/details/${purchase.id}`)}
+                />
+                <div className="settings-purchase-details">
+                  <h2 className="settings-purchase-title">{purchase.title}</h2>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }

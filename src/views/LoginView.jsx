@@ -11,7 +11,7 @@ function LoginView() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
-	const { user, setUser } = useStoreContext();
+	const { setUser } = useStoreContext();
 
 	async function loginByEmail(event) {
 		event.preventDefault();
@@ -30,7 +30,6 @@ function LoginView() {
 		try {
 			const user = (await signInWithPopup(auth, new GoogleAuthProvider())).user;
 			setUser(user);
-			setSignedIn(true);
 			navigate("/movies");
 		} catch (error) {
 			alert("An error occurred while signing in!");
