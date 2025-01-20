@@ -34,7 +34,7 @@ export const StoreProvider = ({ children }) => {
 		const immutableCart = Map.isMap(updatedCart) ? updatedCart : Map(updatedCart);
 		setCart(immutableCart);
 		if (user) {
-			localStorage.setItem(user.uid, JSON.stringify(immutableCart.toJS()));
+			localStorage.setItem(user.uid, JSON.stringify(Array.from(immutableCart.entries())));
 		}
 	};
 
